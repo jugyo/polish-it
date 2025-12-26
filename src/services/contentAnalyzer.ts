@@ -1,5 +1,5 @@
 export function buildSystemPrompt(fullFileContent: string): string {
-  const baseInstruction = `You are an expert assistant that improves text.
+	const baseInstruction = `You are an expert assistant that improves text.
 Your task is to improve the given content while maintaining its original purpose and language.
 
 OUTPUT FORMAT:
@@ -37,5 +37,5 @@ ${fullFileContent}
 
 The user will provide the EXACT text to improve. Your output must have the same scope and boundaries as the input - no more, no less.`;
 
-  return baseInstruction;
+	return baseInstruction;
 }

@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { OpenAIClient } from "./clients/openai";
-import { buildSystemPrompt } from "./services/contentAnalyzer";
+import { buildSystemPrompt } from "./services/systemPrompt";
+import { buildUserPrompt } from "./services/userPrompt";
 import { getEditorContext, StreamingEditor } from "./services/editorService";
 
 // Output channel for logging
@@ -100,21 +101,7 @@ export async function improveCommand(): Promise<void> {
 						structure,
 					);
 
-					// Build user message with structure hint
-					const lines = structure.content.split("\n");
-					const lineCount = lines.length;
-					const userMessage =
-						lineCount > 1
-							? `Improve the following text. The improved text MUST have exactly ${lineCount} lines, matching the input structure.
-
-Text to improve:
-${structure.content}
-
-Respond with JSON: {"improved": "your improved text here"}`
-							: `Improve the following text:
-${structure.content}
-
-Respond with JSON: {"improved": "your improved text here"}`;
+					const userMessage = buildUserPrompt(structure.content);
 
 					log("=== USER PROMPT ===");
 					log(userMessage);

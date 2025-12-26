@@ -4,6 +4,28 @@ export interface TokenCost {
 	output: number;
 }
 
+// Context window size per model (in tokens)
+export function getContextWindowSize(model: string): number {
+	const modelLower = model.toLowerCase();
+	if (modelLower.includes("gpt-4o-mini")) {
+		return 128_000;
+	}
+	if (modelLower.includes("gpt-4o")) {
+		return 128_000;
+	}
+	if (modelLower.includes("gpt-4-turbo")) {
+		return 128_000;
+	}
+	if (modelLower.includes("gpt-4")) {
+		return 8_192;
+	}
+	if (modelLower.includes("gpt-3.5-turbo")) {
+		return 16_385;
+	}
+	// Default fallback (assume 128k for newer models)
+	return 128_000;
+}
+
 export function getCostPer1MTokens(model: string): TokenCost {
 	const modelLower = model.toLowerCase();
 	if (modelLower.includes("gpt-4o-mini")) {

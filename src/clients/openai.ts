@@ -1,12 +1,14 @@
 import OpenAI from "openai";
 import { getConfig } from "../config";
-import { calculateCost } from "./pricing";
+import { calculateCost, getContextWindowSize } from "./pricing";
 
 export interface UsageInfo {
 	promptTokens: number;
 	completionTokens: number;
 	totalTokens: number;
 	estimatedCost: number;
+	contextWindowSize: number;
+	contextUsagePercent: number;
 }
 
 export interface StreamCallbacks {
@@ -68,15 +70,19 @@ export class OpenAIClient {
 
 				// Usage info comes in the last chunk
 				if (chunk.usage) {
+					const contextWindowSize = getContextWindowSize(this.model);
+					const totalTokens = chunk.usage.total_tokens;
 					usage = {
 						promptTokens: chunk.usage.prompt_tokens,
 						completionTokens: chunk.usage.completion_tokens,
-						totalTokens: chunk.usage.total_tokens,
+						totalTokens,
 						estimatedCost: calculateCost(
 							this.model,
 							chunk.usage.prompt_tokens,
 							chunk.usage.completion_tokens,
 						),
+						contextWindowSize,
+						contextUsagePercent: (totalTokens / contextWindowSize) * 100,
 					};
 				}
 			}

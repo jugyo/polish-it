@@ -8,7 +8,7 @@ let outputChannel: vscode.OutputChannel | undefined;
 
 function getOutputChannel(): vscode.OutputChannel {
 	if (!outputChannel) {
-		outputChannel = vscode.window.createOutputChannel("Make It Better");
+		outputChannel = vscode.window.createOutputChannel("Polish It");
 	}
 	return outputChannel;
 }
@@ -139,6 +139,9 @@ Respond with JSON: {"improved": "your improved text here"}`;
 										log(`Input tokens: ${usage.promptTokens}`);
 										log(`Output tokens: ${usage.completionTokens}`);
 										log(`Total tokens: ${usage.totalTokens}`);
+										log(
+											`Context window: ${usage.totalTokens.toLocaleString()} / ${usage.contextWindowSize.toLocaleString()} (${usage.contextUsagePercent.toFixed(2)}%)`,
+										);
 										log(`Estimated cost: $${usage.estimatedCost.toFixed(6)}`);
 										log("=============");
 									}

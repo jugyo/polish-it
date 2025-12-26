@@ -5,7 +5,7 @@ A VSCode extension that polishes selected text using LLM.
 ## Features
 
 - **Polish Selection**: Select text and polish it with AI
-- **Smart Context Detection**: Automatically detects content type (code, markdown, JSON, etc.) and applies appropriate improvements
+- **Context-Aware**: Uses file context to apply appropriate improvements
 - **Real-time Streaming**: See improvements appear in real-time as they're generated
 
 ## Installation
@@ -56,17 +56,6 @@ Open VSCode Settings and search for "Polish It":
 1. Select text
 2. Right-click
 3. Click "Polish"
-
-## Supported Content Types
-
-The extension automatically detects the content type and optimizes the improvement prompt:
-
-| Content Type | Improvements |
-|-------------|--------------|
-| Code (JS/TS/Python/etc.) | Refactoring, readability, best practices |
-| Markdown | Clarity, structure, grammar |
-| JSON/YAML | Formatting, structure |
-| Plain Text | Grammar, clarity, conciseness |
 
 ## License
 

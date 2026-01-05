@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { improveCommand } from "./commands";
+import { improveCommand } from "./improveCommand";
 
 export function activate(context: vscode.ExtensionContext): void {
 	console.log("Polish It extension is now active!");

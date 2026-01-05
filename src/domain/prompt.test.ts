@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { buildSystemPrompt } from "./systemPrompt";
+import { buildSystemPrompt } from "./prompt";
 
-describe("systemPrompt", () => {
+describe("prompt", () => {
 	describe("buildSystemPrompt", () => {
 		const fileContent = "const x = 1;\nconst y = 2;";
 

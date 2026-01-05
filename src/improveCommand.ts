@@ -1,24 +1,9 @@
 import * as vscode from "vscode";
-import { OpenAIClient } from "./clients/openai";
-import { buildSystemPrompt } from "./services/systemPrompt";
-import { buildUserPrompt } from "./services/userPrompt";
-import { getEditorContext, StreamingEditor } from "./services/editorService";
-
-// Output channel for logging
-let outputChannel: vscode.OutputChannel | undefined;
-
-function getOutputChannel(): vscode.OutputChannel {
-	if (!outputChannel) {
-		outputChannel = vscode.window.createOutputChannel("Polish It");
-	}
-	return outputChannel;
-}
-
-function log(message: string): void {
-	const channel = getOutputChannel();
-	const timestamp = new Date().toISOString();
-	channel.appendLine(`[${timestamp}] ${message}`);
-}
+import { buildSystemPrompt, buildUserPrompt } from "./domain/prompt";
+import { getEditorContext } from "./editor/context";
+import { log } from "./editor/logger";
+import { StreamingEditor } from "./editor/streamingEditor";
+import { OpenAIClient } from "./infrastructure/openai";
 
 export async function improveCommand(): Promise<void> {
 	const context = getEditorContext();
@@ -30,7 +15,6 @@ export async function improveCommand(): Promise<void> {
 	const { editor, document, selections, fullFileContent, hasSelection } =
 		context;
 
-	// Check if all selections are empty
 	const hasContent = selections.some((sel) => sel.originalText.trim());
 	if (!hasContent) {
 		vscode.window.showWarningMessage("No content to improve.");
@@ -43,10 +27,8 @@ export async function improveCommand(): Promise<void> {
 	log(systemPrompt);
 	log(`=== Processing ${selections.length} selection(s) ===`);
 
-	// Create abort controller for cancellation
 	const abortController = new AbortController();
 
-	// Show progress
 	await vscode.window.withProgress(
 		{
 			location: vscode.ProgressLocation.Notification,
@@ -56,12 +38,10 @@ export async function improveCommand(): Promise<void> {
 			cancellable: true,
 		},
 		async (_progress, token) => {
-			// Handle cancellation
 			token.onCancellationRequested(() => {
 				abortController.abort();
 			});
 
-			// Process selections from top to bottom
 			for (let i = 0; i < selections.length; i++) {
 				if (abortController.signal.aborted) {
 					break;
@@ -69,7 +49,6 @@ export async function improveCommand(): Promise<void> {
 
 				const { structure } = selections[i];
 
-				// Get current selection (auto-updated by VSCode after edits)
 				const currentSelections = editor.selections;
 				const currentSelection = currentSelections[i];
 				if (!currentSelection) {
@@ -82,7 +61,6 @@ export async function improveCommand(): Promise<void> {
 
 				const currentText = document.getText(targetRange);
 
-				// Skip empty selections
 				if (!currentText.trim()) {
 					continue;
 				}
